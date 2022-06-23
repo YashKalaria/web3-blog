@@ -6,7 +6,6 @@ import { css } from '@emotion/css'
 import { ethers } from 'ethers'
 import { AccountContext } from '../../context'
 
-/* import contract and owner addresses */
 import {
     contractAddress, ownerAddress
 } from '../../config'
@@ -29,7 +28,6 @@ export default function Post({ post }) {
             post && (
             <div className={container}>
             {
-              /* if the owner is the user, render an edit button */
                 ownerAddress === account && (
                 <div className={editPost}>
                     <Link href={`/edit-post/${id}`}>
@@ -41,7 +39,6 @@ export default function Post({ post }) {
                 )
             }
             {
-              /* if the post has a cover image, render it */
                 post.coverImage && (
                 <img
                     src={post.coverImage}
@@ -61,7 +58,6 @@ export default function Post({ post }) {
 }
 
 export async function getStaticPaths() {
-  /* here we fetch the posts from the network */
     let provider
     if (process.env.ENVIRONMENT === 'local') {
         provider = new ethers.providers.JsonRpcProvider()
@@ -74,9 +70,7 @@ export async function getStaticPaths() {
     const contract = new ethers.Contract(contractAddress, Blog.abi, provider)
     const data = await contract.fetchPosts()
 
-  /* then we map over the posts and create a params object passing */
-  /* the id property to getStaticProps which will run for ever post */
-  /* in the array and generate a new page */
+
     const paths = data.map(d => ({ params: { id: d[2] } }))
 
     return {
@@ -86,9 +80,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  /* using the id property passed in through the params object */
-  /* we can us it to fetch the data from IPFS and pass the */
-  /* post data into the page as props */
+
     const { id } = params
     const ipfsUrl = `${ipfsURI}/${id}`
     const response = await fetch(ipfsUrl)
